@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เซอร์ไพรส์แม่ย้อย</title>
+    <title>เตือนแล้วนะอย่ากด!</title>
     
-    <!-- เรียกใช้ SweetAlert2 สำหรับหน้าต่างแจ้งเตือนสวยๆ -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- เรียกใช้ Canvas Confetti สำหรับเอฟเฟคพลุกระดาษ -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         body {
@@ -19,153 +16,219 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            flex-direction: column;
+            background-color: #ffe082; /* สีเหลืองอ้วก */
             font-family: 'Kanit', sans-serif;
             overflow: hidden;
+            color: #d32f2f;
         }
 
-        /* ปุ่มกดแบบมีแสงกระพริบ */
-        .magic-button {
-            padding: 20px 50px;
-            font-size: 28px;
-            font-weight: 700;
-            color: white;
-            font-family: 'Kanit', sans-serif;
-            background: linear-gradient(45deg, #ff00cc, #333399);
-            border: none;
-            border-radius: 50px;
+        h1 {
+            font-size: 60px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 5px 5px 0px #f44336;
+            margin-bottom: 50px;
+        }
+
+        /* ปุ่มกดแบบปัญญาอ่อนที่สุด */
+        .troll-button {
+            padding: 30px 100px;
+            font-size: 40px;
+            font-weight: 900;
+            color: black;
+            background: linear-gradient(to right, #ffeb3b, #ff9800);
+            border: 10px solid #795548;
+            border-radius: 20px;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: pulse 1.5s infinite;
+            box-shadow: 10px 10px 0px black;
+            transition: all 0.1s ease-in-out;
+            animation: annoyingShake 0.1s infinite;
         }
 
-        .magic-button:hover {
+        .troll-button:hover {
+            animation: annoyingShake 0.05s infinite;
             transform: scale(1.1);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 204, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 0, 204, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 204, 0); }
+        @keyframes annoyingShake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
 
-        /* พื้นหลังตอนรูปเด้งขึ้นมา */
-        .modal-container {
+        /* พื้นหลังความผิดพลาด */
+        .glitch-container {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background-color: black;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            backdrop-filter: blur(8px); /* เบลอฉากหลังเพิ่มความขลัง */
+            opacity: 0;
+            animation: glitchFadeIn 0.5s forwards;
         }
 
-        /* เอฟเฟครูปหมุนพร้อมเรืองแสง */
+        @keyframes glitchFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* รูปภาพกวนตีนสุดขีด */
         .popup-image {
             max-width: 80%;
             max-height: 80vh;
-            border-radius: 20px;
-            box-shadow: 0 0 60px 20px rgba(255, 215, 0, 0.8); /* แสงสีทอง */
-            animation: grandEntrance 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            border-radius: 100px; /* ทำให้รูปดูปัญญาอ่อน */
+            box-shadow: 0 0 100px 50px rgba(0, 255, 0, 0.8); /* แสงสีเขียวน่าเกลียด */
+            animation: intenseGlitch 0.2s infinite;
         }
 
-        @keyframes grandEntrance {
-            0% {
-                transform: scale(0) rotate(-1080deg);
-                opacity: 0;
-            }
-            60% {
-                transform: scale(1.1) rotate(10deg);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
+        @keyframes intenseGlitch {
+            0% { transform: translate(2px, 1px) rotate(0deg); opacity: 1; }
+            20% { transform: translate(-2px, -2px) rotate(10deg); opacity: 0.8; }
+            40% { transform: translate(-1px, 3px) rotate(-5deg); opacity: 0.9; }
+            60% { transform: translate(3px, -1px) rotate(5deg); opacity: 1; }
+            80% { transform: translate(1px, 1px) rotate(-10deg); opacity: 0.7; }
+            100% { transform: translate(-1px, -2px) rotate(0deg); opacity: 1; }
         }
 
-        /* ปุ่มปิด */
+        /* ปุ่มปิดแบบที่คนกดไม่อยากปิด */
         .close-btn {
             position: absolute;
-            top: 30px;
-            right: 40px;
-            font-size: 50px;
-            color: white;
+            top: 20px;
+            right: 20px;
+            font-size: 80px;
+            color: #4caf50;
             cursor: pointer;
-            transition: color 0.3s, transform 0.3s;
+            transition: all 0.3s;
         }
         .close-btn:hover {
-            color: #ff4444;
-            transform: scale(1.2);
+            color: #d32f2f;
+            transform: scale(1.5) rotate(180deg);
+        }
+
+        /* ข้อความลอยๆ */
+        .text-overlay {
+            position: fixed;
+            font-size: 300px;
+            font-weight: 900;
+            color: white;
+            opacity: 0.05;
+            z-index: 999;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-    <!-- ปุ่มเริ่มความอลังการ -->
-    <button class="magic-button" onclick="triggerMagic()">กดตรงนี้เลยแม่ย้อย!</button>
+    <div class="text-overlay">กว น ตี น</div>
+    <h1>เตือนแล้วนะว่าห้ามกด!</h1>
+    
+    <!-- ปุ่มที่เขย่าตลอดเวลา -->
+    <button class="troll-button" onclick="startTrolling()">กดตรงนี้เพื่อเปิดระบบ</button>
 
     <!-- ส่วนที่ซ่อนรูปภาพไว้ -->
-    <div class="modal-container" id="imageModal">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
+    <div class="glitch-container" id="imageModal">
+        <span class="close-btn" onclick="closeModal()">✕</span>
         <img src="https://img1.pic.in.th/images/imagee64073b138a7c4b2.png" alt="Surprise Image" class="popup-image">
     </div>
 
+    <!-- เสียงกวนตีน (ใช้เสียง error และเสียงตลก) -->
+    <audio id="errorSound" src="https://www.myinstants.com/media/sounds/err.mp3"></audio>
+    <audio id="trollSound" src="https://www.myinstants.com/media/sounds/mario-paint-troll.mp3"></audio>
+
     <script>
-        function triggerMagic() {
-            // 1. แสดงกล่องแจ้งเตือนแบบเล่นใหญ่
+        // ฟังก์ชันเริ่มขบวนการกวนตีน
+        function startTrolling() {
+            // เล่นเสียง error
+            document.getElementById('errorSound').play();
+
+            // แจ้งเตือนหลอกๆ ว่าเครื่องพัง
             Swal.fire({
-                title: 'ขอบคุณที่กดนะแม่ย้อย!',
-                width: 600,
-                padding: '3em',
-                color: '#fff',
-                background: '#1e3c72',
-                backdrop: `
-                    rgba(0,0,123,0.6)
-                    url("https://sweetalert2.github.io/images/nyan-cat.gif")
-                    left top
-                    no-repeat
-                `,
-                confirmButtonText: 'เปิดดูความอลังการ',
-                confirmButtonColor: '#ff00cc'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showImageWithEffects();
+                icon: 'error',
+                title: 'ข้อผิดพลาดระบบร้ายแรง!',
+                text: 'คุณทำให้เครื่องแม่ย้อยพังแล้ว! กู้ระบบใหม่ด้วยการกด "โอเค" 5 ครั้ง',
+                confirmButtonText: 'โอเค',
+                allowOutsideClick: false,
+                preConfirm: () => {
+                    return getFakeConfirmation(1);
                 }
             });
         }
 
-        function showImageWithEffects() {
-            // แสดงหน้าต่างรูปภาพ
-            document.getElementById('imageModal').style.display = 'flex';
-
-            // จุดพลุกระดาษรัวๆ 3 วินาที
-            var duration = 3000;
-            var end = Date.now() + duration;
-
-            (function frame() {
-                confetti({
-                    particleCount: 10,
-                    angle: 60,
-                    spread: 80,
-                    origin: { x: 0 },
-                    colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#ffffff']
-                });
-                confetti({
-                    particleCount: 10,
-                    angle: 120,
-                    spread: 80,
-                    origin: { x: 1 },
-                    colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#ffffff']
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
+        // ฟังก์ชันยืนยันความกวนตีน
+        function getFakeConfirmation(count) {
+            return Swal.fire({
+                icon: 'warning',
+                title: `ยืนยันความกวนตีนครั้งที่ ${count}`,
+                text: 'คุณแน่ใจเหรอว่าอยากดู?',
+                confirmButtonText: 'ใช่!',
+                showCancelButton: true,
+                cancelButtonText: 'ไม่ใช่...',
+                allowOutsideClick: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (count < 5) {
+                        return getFakeConfirmation(count + 1);
+                    } else {
+                        // สุดท้ายก็ยอมให้ดูแบบกวนๆ
+                        document.getElementById('trollSound').play();
+                        showImageWithChaos();
+                    }
+                } else {
+                    // ถ้ากดยกเลิก ก็โดนด่า
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'อ่อนแอก็แพ้ไป!',
+                        text: 'บอกแล้วว่าอย่าท้าทายระบบแม่ย้อย',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                 }
-            }());
+            });
+        }
+
+        // ฟังก์ชันแสดงรูปภาพพร้อมความโกลาหล
+        function showImageWithChaos() {
+            document.getElementById('imageModal').style.display = 'flex';
+            
+            // ทำให้รูปเด้งแบบโกลาหล 3 วินาที
+            let image = document.querySelector('.popup-image');
+            let counter = 0;
+            let interval = setInterval(() => {
+                image.style.transform = `scale(${1 + Math.random() * 0.2}) rotate(${Math.random() * 20 - 10}deg)`;
+                counter++;
+                if (counter > 15) {
+                    clearInterval(interval);
+                    // สุดท้ายแสดงแจ้งเตือนขอโทษ...เอ้ย...ขอบคุณ
+                    showFinalMessage();
+                }
+            }, 200);
+        }
+
+        // แจ้งเตือนสุดท้าย
+        function showFinalMessage() {
+            Swal.fire({
+                title: 'ขอบคุณที่กดนะแม่ย้อย!',
+                text: 'แต่... เครื่องนี้โดนแม่ย้อยล็อกแล้วนะ โทษทีๆ',
+                width: 600,
+                padding: '3em',
+                color: '#fff',
+                background: '#1e3c72',
+                confirmButtonText: 'รับทราบ (ไม่มีทางเลือกอื่น)',
+                confirmButtonColor: '#ff00cc',
+                allowOutsideClick: false
+            });
         }
 
         function closeModal() {
